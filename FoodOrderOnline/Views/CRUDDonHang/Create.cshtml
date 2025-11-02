@@ -1,0 +1,52 @@
+﻿@model FoodOrderOnline.Models.DonHang
+@{
+    ViewData["Title"] = "Tạo mới Đơn hàng";
+    Layout = "_LayoutNhanVien";
+}
+
+<h1>Tạo mới</h1>
+<h4>Đơn hàng</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MaKh" class="control-label">Khách Hàng</label>
+                <select asp-for="MaKh" class="form-control" asp-items="ViewBag.MaKh">
+                    <option value="">-- Chọn Khách Hàng --</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="DiaChiGiao" class="control-label">Địa Chỉ Giao</label>
+                <input asp-for="DiaChiGiao" class="form-control" />
+                <span asp-validation-for="DiaChiGiao" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TrangThai" class="control-label"></label>
+                <input asp-for="TrangThai" class="form-control" value="Chờ xác nhận" />
+                <span asp-validation-for="TrangThai" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TongTien" class="control-label">Tổng Tiền (Tạm tính)</label>
+                <input asp-for="TongTien" class="form-control" value="0" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MaVoucher" class="control-label">Voucher</label>
+                <select asp-for="MaVoucher" class="form-control" asp-items="ViewBag.MaVoucher">
+                    <option value="">-- Không có --</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Tạo" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>

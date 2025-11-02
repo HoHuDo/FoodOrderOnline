@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Đặt Hàng Thành Công";
+}
+
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <nav class="breadcrumb bg-light mb-30">
+                <a class="breadcrumb-item text-dark" asp-controller="TrangChu" asp-action="Index">Trang chủ</a>
+                <span class="breadcrumb-item active">Đặt hàng thành công</span>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-12 text-center" style="padding-top: 60px; padding-bottom: 60px;">
+
+            <div>
+                <i class="fa fa-check-circle text-success" style="font-size: 100px;"></i>
+            </div>
+
+            <h2 class="mt-4 mb-3">Đặt hàng thành công!</h2>
+
+            <p class="lead mb-3">
+                Cảm ơn bạn đã tin tưởng và mua hàng.
+                <br>
+                Chúng tôi sẽ sớm liên hệ với bạn để xác nhận đơn hàng.
+            </p>
+
+            <h4 class="font-weight-bold mb-4">
+                Mã đơn hàng của bạn là: #@ViewBag.MaDonHang
+            </h4>
+
+            <a asp-controller="TrangChu" asp-action="Index" class="btn btn-primary btn-lg py-3 px-5">
+                <i class="fa fa-home mr-2"></i>
+                Về Trang chủ
+            </a>
+
+        </div>
+    </div>
+</div>

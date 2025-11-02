@@ -1,0 +1,249 @@
+﻿@* SỬA 1: Đổi tên Model *@
+@model FoodOrderOnline.ViewModels.GioHangVM
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <nav class="breadcrumb bg-light mb-30">
+                <a class="breadcrumb-item text-dark" asp-controller="TrangChu" asp-action="Index">Trang chủ</a>
+                <a class="breadcrumb-item text-dark" asp-controller="MonAn" asp-action="Index">Món ăn</a>
+                <span class="breadcrumb-item active">Giỏ hàng</span>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-lg-8 table-responsive mb-5">
+            <table class="table table-light table-borderless table-hover text-center mb-0">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Món ăn</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Tổng tiền</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody class="align-middle" id="cart-table-body">
+                    @if (Model.CartItems.Any())
+                    {
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <tr data-id="@item.MaMon">
+                                <td class="align-middle">
+                                    <img src="~/images/monan/@item.HinhAnh" alt="" style="width: 50px;"> @item.TenMon
+                                </td>
+                                <td class="align-middle price">@item.Gia.ToString("N0")đ</td>
+                                <td class="align-middle">
+                                    <div class="input-group quantity mx-auto" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-minus btn-update">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center item-quantity" value="@item.SoLuong">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-plus btn-update">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle item-total">@item.ThanhTien.ToString("N0")đ</td>
+                                <td class="align-middle"><button class="btn btn-sm btn-danger btn-remove"><i class="fa fa-times"></i></button></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">Giỏ hàng của bạn đang trống.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <form class="mb-30" id="coupon-form">
+                <div class="input-group">
+                    <input type="text" class="form-control border-0 p-4" name="couponCode" placeholder="Mã giảm giá" value="@Model.CouponCode">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Áp dụng</button>
+                    </div>
+                </div>
+                <small id="coupon-message" class="form-text @(Model.CouponDiscount > 0 ? "text-success" : "text-danger")">
+                    @Model.CouponMessage
+                </small>
+            </form>
+            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Tóm Tắt Giỏ Hàng</span></h5>
+            <div class="bg-light p-30 mb-5">
+                <div class="border-bottom pb-2">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h6>Tạm tính</h6>
+                        <h6 id="cart-subtotal">@Model.Subtotal.ToString("N0")đ</h6>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="font-weight-medium">Phí vận chuyển</h6>
+                        <h6 class="font-weight-medium" id="cart-shipping">@Model.Shipping.ToString("N0")đ</h6>
+                    </div>
+                    <div class="d-flex justify-content-between text-danger" id="coupon-display" style="@(Model.CouponDiscount == 0 ? "display: none;" : "")">
+                        <h6 class="font-weight-medium">Giảm giá (@Model.CouponCode)</h6>
+                        <h6 class="font-weight-medium" id="cart-discount">-@Model.CouponDiscount.ToString("N0")đ</h6>
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <div class="d-flex justify-content-between mt-2">
+                        <h5>Tổng tiền</h5>
+                        <h5 id="cart-total">@Model.Total.ToString("N0")đ</h5>
+                    </div>
+                    <a asp-controller="ThanhToan" asp-action="Index" class="btn btn-block btn-primary font-weight-bold my-3 py-3">
+                        Tiến hành thanh toán
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // SỬA 3: Đổi tên Controller
+            var updateUrl = '@Url.Action("UpdateCart", "GioHang")';
+            var removeUrl = '@Url.Action("RemoveFromCart", "GioHang")';
+            var couponUrl = '@Url.Action("ApplyCoupon", "GioHang")';
+
+            // Định dạng tiền tệ
+            const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
+
+            // --- HÀM 1: CẬP NHẬT TÓM TẮT GIỎ HÀNG (BÊN PHẢI) ---
+            function updateCartSummary(summary) {
+                $('#cart-subtotal').text(currencyFormatter.format(summary.subtotal));
+                $('#cart-shipping').text(currencyFormatter.format(summary.shipping));
+                $('#cart-total').text(currencyFormatter.format(summary.total));
+
+                // Cập nhật số lượng trên header (nếu có)
+                if (summary.cartItems) {
+                     $('#cart-count').text(summary.cartItems.length);
+                }
+
+                // Xử lý hiển thị mã giảm giá
+                if (summary.couponDiscount > 0) {
+                    $('#cart-discount').text('-' + currencyFormatter.format(summary.couponDiscount));
+                    $('#coupon-display').find('h6:first').text('Giảm giá (' + summary.couponCode + ')');
+                    $('#coupon-display').show();
+                } else {
+                    $('#coupon-display').hide();
+                }
+
+                // Hiển thị thông báo (nếu có)
+                 if (summary.couponMessage) {
+                    $('#coupon-message').text(summary.couponMessage).removeClass('text-success').addClass('text-danger').show();
+                } else if (summary.couponCode) {
+                     $('#coupon-message').text('Áp dụng mã thành công!').removeClass('text-danger').addClass('text-success').show();
+                }
+                else {
+                     $('#coupon-message').hide();
+                }
+            }
+
+            // --- SỰ KIỆN 2: CLICK NÚT +/- (CẬP NHẬT SỐ LƯỢNG) ---
+            $('#cart-table-body').on('click', '.btn-update', function () {
+                var $button = $(this);
+                var $row = $button.closest('tr');
+                var maMon = $row.data('id');
+                var $input = $row.find('.item-quantity');
+                var currentQuantity = parseInt($input.val());
+
+                var newQuantity;
+                if ($button.hasClass('btn-plus')) {
+                    newQuantity = currentQuantity + 0;
+                } else {
+                    newQuantity = currentQuantity - 0;
+                }
+
+                if(newQuantity < 0) newQuantity = 0;
+
+                $input.val(newQuantity);
+
+                if (newQuantity <= 0) {
+                    $row.find('.btn-remove').click();
+                } else {
+                    $.ajax({
+                        url: updateUrl,
+                        type: 'POST',
+                        data: {
+                            maMon: maMon,
+                            soLuong: newQuantity
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                $row.find('.item-total').text(currencyFormatter.format(response.itemTotal));
+                                updateCartSummary(response.summary);
+                                $('#cart-count').text(response.cartCount); // Cập nhật header
+                            }
+                        }
+                    });
+                }
+            });
+
+            // --- SỰ KIỆN 3: CLICK NÚT X (XÓA SẢN PHẨM) ---
+            $('#cart-table-body').on('click', '.btn-remove', function () {
+                var $button = $(this);
+                var $row = $button.closest('tr');
+                var maMon = $row.data('id');
+
+                if (confirm('Bạn có chắc muốn xóa món ăn này khỏi giỏ hàng?')) {
+                    $.ajax({
+                        url: removeUrl,
+                        type: 'POST',
+                        data: {
+                            maMon: maMon
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                $row.fadeOut(300, function() {
+                                    $(this).remove();
+                                    // Kiểm tra nếu giỏ hàng rỗng
+                                    if ($('#cart-table-body tr').length === 0) {
+                                        $('#cart-table-body').html('<tr><td colspan="5">Giỏ hàng của bạn đang trống.</td></tr>');
+                                    }
+                                });
+                                updateCartSummary(response.summary);
+                                $('#cart-count').text(response.cartCount); // Cập nhật header
+                            }
+                        }
+                    });
+                }
+            });
+
+            // --- SỰ KIỆN 4: ÁP DỤNG MÃ GIẢM GIÁ ---
+            $('#coupon-form').on('submit', function (e) {
+                e.preventDefault();
+                var code = $(this).find('input[name="couponCode"]').val();
+                var $message = $('#coupon-message');
+
+                $.ajax({
+                    url: couponUrl,
+                    type: 'POST',
+                    data: {
+                        couponCode: code
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $message.text(response.message).removeClass('text-danger').addClass('text-success').show();
+                        } else {
+                            $message.text(response.message).removeClass('text-success').addClass('text-danger').show();
+                        }
+                        updateCartSummary(response.summary);
+                    }
+                });
+            });
+
+        });
+    </script>
+}

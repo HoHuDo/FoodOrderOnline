@@ -1,0 +1,38 @@
+﻿@model FoodOrderOnline.Models.MonAn
+@{
+    Layout = "_LayoutNhanVien";
+    ViewData["Title"] = "Xóa";
+}
+
+<h1>Xóa</h1>
+<h3 class="text-danger">Bạn có chắc chắn muốn xóa món ăn này không?</h3>
+<div>
+    <h4>Món ăn: @Model.TenMon</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Gia)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Gia.ToString("N0")đ
+        </dd>
+        <dt class="col-sm-2">
+            Danh mục
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MaDmNavigation.TenDm)
+        </dd>
+        <dt class="col-sm-2">
+            Hình ảnh
+        </dt>
+        <dd class="col-sm-10">
+            <img src="~/images/monan/@Model.HinhAnh" style="max-width: 150px;" />
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="MaMon" />
+        <input type="submit" value="Xác nhận Xóa" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+    </form>
+</div>

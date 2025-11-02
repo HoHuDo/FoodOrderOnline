@@ -1,0 +1,32 @@
+﻿@model FoodOrderOnline.Models.DonHang
+@{
+    ViewData["Title"] = "Xóa Đơn hàng";
+    Layout = "_LayoutNhanVien";
+}
+
+<h1>Xóa</h1>
+<h3 class="text-danger">Bạn có chắc chắn muốn xóa đơn hàng này không?</h3>
+<p class="text-danger">Hành động này sẽ xóa vĩnh viễn đơn hàng và TẤT CẢ các món ăn (chi tiết) liên quan.</p>
+<div>
+    <h4>Đơn hàng #@Model.MaDh</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Khách hàng</dt>
+        <dd class="col-sm-10">@Model.MaKhNavigation.HoTen</dd>
+
+        <dt class="col-sm-2">Ngày Đặt</dt>
+        <dd class="col-sm-10">@Model.NgayDat</dd>
+
+        <dt class="col-sm-2">Tổng Thanh Toán</dt>
+        <dd class="col-sm-10">@Model.TongThanhToan?.ToString("N0")đ</dd>
+
+        <dt class="col-sm-2">Trạng Thái</dt>
+        <dd class="col-sm-10">@Model.TrangThai</dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="MaDh" />
+        <input type="submit" value="Xác nhận Xóa" class="btn btn-danger" /> |
+        <a asp-action="Index">Quay lại Danh sách</a>
+    </form>
+</div>

@@ -1,0 +1,44 @@
+﻿@model FoodOrderOnline.ViewModels.LocTheoGiaVM
+
+<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+    @* Sửa 'id' và 'for' thành 'price-all' cho khớp *@
+    <input type="checkbox" class="custom-control-input price-checkbox"
+           id="price-all" name="priceRanges" value="all" checked>
+    <label class="custom-control-label" for="price-all">Tất cả món</label>
+    <span class="badge border font-weight-normal">@Model.TongSoMon</span>
+</div>
+
+<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+    <input type="checkbox" class="custom-control-input price-checkbox"
+           id="price-1" name="priceRanges" value="duoi50">
+    <label class="custom-control-label" for="price-1">Dưới 50K</label>
+    <span class="badge border font-weight-normal">@Model.duoi50</span>
+</div>
+
+<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+    <input type="checkbox" class="custom-control-input price-checkbox"
+           id="price-2" name="priceRanges" value="tu50den100">
+    <label class="custom-control-label" for="price-2">Từ 50K đến 100K</label>
+    <span class="badge border font-weight-normal">@Model.tu50den100</span>
+</div>
+
+<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+    <input type="checkbox" class="custom-control-input price-checkbox"
+           id="price-3" name="priceRanges" value="tu100den150">
+    <label class="custom-control-label" for="price-3">Từ 100K đến 150K</label>
+    <span class="badge border font-weight-normal">@Model.tu100den150</span>
+</div>
+
+<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+    <input type="checkbox" class="custom-control-input price-checkbox"
+           id="price-4" name="priceRanges" value="tu150den200">
+    <label class="custom-control-label" for="price-4">Từ 150K đến 200K</label>
+    <span class="badge border font-weight-normal">@Model.tu150den200</span>
+</div>
+
+<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
+    <input type="checkbox" class="custom-control-input price-checkbox"
+           id="price-5" name="priceRanges" value="tren200">
+    <label class="custom-control-label" for="price-5">Trên 200K</label>
+    <span class="badge border font-weight-normal">@Model.tren200</span>
+</div>

@@ -1,0 +1,155 @@
+﻿@model FoodOrderOnline.ViewModels.DashboardVM
+@{
+    ViewData["Title"] = "Tổng quan";
+    Layout = "_LayoutNhanVien"; // Chỉ định layout admin
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Thống kê tổng quan</h1>
+</div>
+
+<div class="row">
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Tổng Doanh Thu (Hoàn thành)
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TongDoanhThu.ToString("N0")đ</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Đơn Hàng Mới (Chờ xác nhận)
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.DonHangMoi</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-receipt fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Tổng số Khách Hàng
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TongSoKhachHang</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Tổng số Món Ăn
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TongSoMonAn</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-hamburger fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Đơn Hàng Gần Đây Nhất</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Mã ĐH</th>
+                                <th>Khách Hàng</th>
+                                <th>Ngày Đặt</th>
+                                <th>Tổng Tiền</th>
+                                <th>Trạng Thái</th>
+                                <th>Chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.DonHangGanDay.Any())
+                            {
+                                @foreach (var donHang in Model.DonHangGanDay)
+                                {
+                                    <tr>
+                                        <td>@donHang.MaDh</td>
+                                        <td>@(donHang.MaKhNavigation?.HoTen ?? "N/A")</td>
+                                        <td>@donHang.NgayDat</td>
+                                        <td>@donHang.TongThanhToan?.ToString("N0")đ</td>
+                                        <td>
+                                            @if (donHang.TrangThai == "Hoàn thành")
+                                            {
+                                                <span class="badge bg-success text-white">@donHang.TrangThai</span>
+                                            }
+                                            else if (donHang.TrangThai == "Chờ xác nhận")
+                                            {
+                                                <span class="badge bg-warning text-dark">@donHang.TrangThai</span>
+                                            }
+                                            else if (donHang.TrangThai == "Đã hủy")
+                                            {
+                                                <span class="badge bg-danger text-white">@donHang.TrangThai</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-info text-white">@donHang.TrangThai</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a asp-area="Admin" asp-controller="CRUDDonHang" asp-action="Details" asp-route-id="@donHang.MaDh" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center">Chưa có đơn hàng nào.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* (Bạn có thể thêm các biểu đồ (Charts) vào đây nếu muốn) *@

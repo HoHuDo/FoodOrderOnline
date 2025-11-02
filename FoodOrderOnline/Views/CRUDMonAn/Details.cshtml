@@ -1,0 +1,59 @@
+﻿@model FoodOrderOnline.Models.MonAn
+@{
+    Layout = "_LayoutNhanVien";
+    ViewData["Title"] = "Chi tiết";
+}
+
+<h1>Chi tiết Món ăn</h1>
+
+<div>
+    <h4>@Model.TenMon</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TenMon)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TenMon)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MoTa)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MoTa)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Gia)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Gia.ToString("N0")đ
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TrangThai)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TrangThai)
+        </dd>
+
+        <dt class="col-sm-2">
+            Danh mục
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MaDmNavigation.TenDm)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HinhAnh)
+        </dt>
+        <dd class="col-sm-10">
+            <img src="~/images/monan/@Model.HinhAnh" style="max-width: 250px;" />
+        </dd>
+    </dl>
+</div>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.MaMon" class="btn btn-warning">Sửa</a> |
+    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+</div>

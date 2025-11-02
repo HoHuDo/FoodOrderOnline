@@ -1,0 +1,60 @@
+﻿@model FoodOrderOnline.Models.MonAn
+@{
+    ViewData["Title"] = "Chỉnh sửa Món ăn";
+    Layout = "_LayoutNhanVien";
+}
+
+<h1>Chỉnh sửa: @Model.TenMon</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaMon" />
+
+            <div class="form-group mb-3">
+                <label asp-for="TenMon" class="control-label"></label>
+                <input asp-for="TenMon" class="form-control" />
+                <span asp-validation-for="TenMon" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MoTa" class="control-label"></label>
+                <textarea asp-for="MoTa" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Gia" class="control-label"></label>
+                <input asp-for="Gia" class="form-control" type="number" />
+                <span asp-validation-for="Gia" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MaDm" class="control-label">Danh mục</label>
+                <select asp-for="MaDm" class="form-control" asp-items="ViewBag.MaDm"></select>
+                <span asp-validation-for="MaDm" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TrangThai" class="control-label"></label>
+                <input asp-for="TrangThai" class="form-control" />
+                <span asp-validation-for="TrangThai" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <label>Ảnh hiện tại:</label>
+        <img src="~/images/monan/@Model.HinhAnh" class="img-fluid rounded" />
+        <hr />
+        <div class="form-group mb-3">
+            <label class="control-label">Tải ảnh mới (Bỏ qua nếu không muốn đổi)</label>
+            <input type="file" name="HinhAnhFile" class="form-control" />
+        </div>
+    </div>
+</div>

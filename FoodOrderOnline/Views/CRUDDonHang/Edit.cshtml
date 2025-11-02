@@ -1,0 +1,22 @@
+﻿@model FoodOrderOnline.Models.DonHang
+@{
+    ViewData["Title"] = "Sửa Đơn hàng";
+    Layout = "_LayoutNhanVien";
+}
+<h1>Sửa Trạng thái Đơn hàng: #@Model.MaDh</h1>
+<h4>Khách hàng: @Model.MaKhNavigation?.HoTen</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="MaDh" />
+            <div class="form-group mb-3">
+                <label asp-for="TrangThai"></label>
+                <select asp-for="TrangThai" class="form-control" asp-items="ViewBag.TrangThaiList"></select>
+                <span asp-validation-for="TrangThai" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
+</div>

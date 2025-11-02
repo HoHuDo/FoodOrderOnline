@@ -1,0 +1,41 @@
+﻿@model IEnumerable<FoodOrderOnline.Models.DonHang>
+@{
+    ViewData["Title"] = "Quản lý Đơn hàng";
+    Layout = "_LayoutNhanVien";
+}
+
+<h1>Quản lý Đơn hàng</h1>
+<p>
+    <a asp-action="Create" class="btn btn-success">Tạo Đơn hàng mới</a>
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Mã ĐH</th>
+            <th>Khách Hàng</th>
+            <th>Ngày Đặt</th>
+            <th>Mã Voucher</th>
+            <th>Tổng Tiền</th>
+            <th>Trạng Thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaDh</td>
+                <td>@(item.MaKhNavigation?.HoTen ?? "N/A")</td>
+                <td>@item.NgayDat</td>
+                <td>@(item.MaVoucherNavigation?.MaCode ?? "N/A")</td>
+                <td>@item.TongThanhToan?.ToString("N0")đ</td>
+                <td>@item.TrangThai</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaDh" class="btn btn-sm btn-warning">Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.MaDh" class="btn btn-sm btn-info">Chi tiết</a>
+                    <a asp-action="Delete" asp-route-id="@item.MaDh" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

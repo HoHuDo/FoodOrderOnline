@@ -1,0 +1,194 @@
+﻿@model FoodOrderOnline.ViewModels.MonAnPaginationVM
+@{
+    ViewData["Title"] = "Món Ăn";
+
+    // Lấy trạng thái filter do controller bơm vào
+    var selectedDanhMucIds = ViewBag.SelectedDanhMucIds as IEnumerable<int> ?? Enumerable.Empty<int>();
+    var selectedPriceRanges = ViewBag.SelectedPriceRanges as IEnumerable<string> ?? new[] { "all" };
+    var sortByServer = ViewBag.SortBy as string ?? "price_asc";
+}
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <nav class="breadcrumb bg-light mb-30">
+                <a class="breadcrumb-item text-dark" href="#">Home</a>
+                <a class="breadcrumb-item text-dark" href="#">Shop</a>
+                <span class="breadcrumb-item active">Shop List</span>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-lg-3 col-md-4">
+
+            <h5 class="section-title position-relative text-uppercase mb-3">
+                <span class="bg-secondary pr-3">Danh mục</span>
+            </h5>
+            <div class="bg-light p-4 mb-30">
+                <form id="filter-danhmuc">
+                    @await Component.InvokeAsync("TongMonAn")
+                    @* Truyền danh sách đã chọn sang ViewComponent *@
+                    @await Component.InvokeAsync("DanhMucMonAn", new { selectedIds = selectedDanhMucIds })
+                </form>
+            </div>
+
+            <h5 class="section-title position-relative text-uppercase mb-3">
+                <span class="bg-secondary pr-3">Lọc theo giá</span>
+            </h5>
+            <div class="bg-light p-4 mb-30">
+                <form id="filter-price">
+                    @* Nếu VC LocTheoGia nhận tham số 'selected' *@
+                    @await Component.InvokeAsync("LocTheoGia", new { selected = selectedPriceRanges })
+                    @* Nếu chưa nhận tham số, tớ sẽ gửi bạn file VC để sửa ở mục 3 *@
+                </form>
+            </div>
+
+        </div>
+
+        <div class="col-lg-9 col-md-8">
+            <div class="row pb-3">
+                <div class="col-12 pb-1">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div>
+                            <button class="btn btn-sm btn-light"><i class="fa fa-th-large"></i></button>
+                            <button class="btn btn-sm btn-light ml-2"><i class="fa fa-bars"></i></button>
+                        </div>
+                        <div class="ml-2">
+                            <div class="btn-group ml-2">
+                                <button type="button" id="sort-button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
+                                    Giá (Thấp-Cao)
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item sort-link" href="#" data-sort="price_asc">Giá (Thấp-Cao)</a>
+                                    <a class="dropdown-item sort-link" href="#" data-sort="price_desc">Giá (Cao-Thấp)</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="product-list-container" class="row">
+                    @await Html.PartialAsync("_DanhSachMonAnPartial", Model.MonAns)
+                </div>
+
+                <div class="col-12" id="pagination-container">
+                    @await Html.PartialAsync("_PaginationPartial", Model.Pagination)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+
+            // ===== Khởi tạo theo trạng thái server =====
+            var currentPage = 1;
+            var currentSortBy = '@sortByServer';
+
+            // Set text cho nút sort theo currentSortBy ban đầu
+            if (currentSortBy === 'price_desc') {
+                $('#sort-button').text('Giá (Cao-Thấp)');
+            } else {
+                $('#sort-button').text('Giá (Thấp-Cao)');
+            }
+
+            function locSanPham(page = 1) {
+                currentPage = page;
+
+                var selectedDanhMucs = [];
+                var selectedPrices = [];
+
+                var allDanhMucChecked = $('.dm-checkbox[value="all"]').is(':checked');
+                if (allDanhMucChecked || $('.dm-checkbox:checked').length === 0) {
+                    selectedDanhMucs = [];
+                } else {
+                    $('.dm-checkbox:checked').each(function () {
+                        if ($(this).val() !== "all") {
+                            selectedDanhMucs.push($(this).val());
+                        }
+                    });
+                }
+
+                $('.price-checkbox:checked').each(function () {
+                    if ($(this).val() === "all") {
+                        selectedPrices = ["all"];
+                        return false;
+                    }
+                    selectedPrices.push($(this).val());
+                });
+                if (selectedPrices.length === 0) selectedPrices.push("all");
+
+                $.ajax({
+                    url: '@Url.Action("LocMonAn", "MonAn")',
+                    type: 'GET',
+                    traditional: true,
+                    data: {
+                        danhMucIds: selectedDanhMucs,
+                        priceRanges: selectedPrices,
+                        page: currentPage,
+                        sortBy: currentSortBy
+                    },
+                    success: function (response) {
+                        $('#product-list-container').html(response.productsHtml);
+                        $('#pagination-container').html(response.paginationHtml);
+                    },
+                    error: function () {
+                        alert("Đã xảy ra lỗi khi lọc sản phẩm!");
+                    }
+                });
+            }
+
+            // Checkbox thay đổi → lọc
+            $(document).on('change', '.dm-checkbox, .price-checkbox', function () {
+                locSanPham(1);
+            });
+
+            // Phân trang
+            $(document).on('click', '.pagination-link', function (e) {
+                e.preventDefault();
+                var page = $(this).data('page');
+                locSanPham(page);
+            });
+
+            // Sort
+            $(document).on('click', '.sort-link', function (e) {
+                e.preventDefault();
+                currentSortBy = $(this).data('sort');
+                $('#sort-button').text($(this).text());
+                locSanPham(1);
+            });
+
+            // Logic "All" cho danh mục
+            $(document).on('change', '.dm-checkbox', function () {
+                var isChecked = $(this).is(':checked');
+                var val = $(this).val();
+                if (val === "all" && isChecked) {
+                    $('.dm-checkbox').not(this).prop('checked', false);
+                } else if (val !== "all" && isChecked) {
+                    $('.dm-checkbox[value="all"]').prop('checked', false);
+                }
+            });
+
+            // Logic "All" cho giá
+            $(document).on('change', '.price-checkbox', function () {
+                var isChecked = $(this).is(':checked');
+                var val = $(this).val();
+                if (val === "all" && isChecked) {
+                    $('.price-checkbox').not(this).prop('checked', false);
+                } else if (val !== "all" && isChecked) {
+                    $('.price-checkbox[value="all"]').prop('checked', false);
+                }
+            });
+
+            // (Nếu bạn có ô search)
+            $(document).on('submit', '#search-form', function (e) {
+                e.preventDefault();
+                locSanPham(1);
+            });
+        });
+    </script>
+}

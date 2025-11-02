@@ -1,0 +1,6 @@
+﻿@model IEnumerable<FoodOrderOnline.ViewModels.DanhMucVM>
+
+@foreach(var item in Model)
+{
+    <a asp-controller="MonAn" asp-action="Index" asp-route-danhMucId="@item.MaDm" class="nav-item nav-link">@item.TenDm</a>
+}

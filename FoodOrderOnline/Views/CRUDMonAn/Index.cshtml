@@ -1,0 +1,68 @@
+﻿@model IEnumerable<FoodOrderOnline.Models.MonAn>
+@{
+    ViewData["Title"] = "Quản lý Món ăn";
+    Layout = "_LayoutNhanVien";
+}
+
+<h1>Quản lý Món ăn</h1>
+<p>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="fas fa-plus"></i> Tạo Món ăn mới
+    </a>
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TenMon)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HinhAnh)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaDmNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrangThai)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenMon)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.HinhAnh))
+                    {
+                        <img src="~/images/monan/@item.HinhAnh" alt="@item.TenMon" style="width: 80px; height: 80px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <span>(Không có ảnh)</span>
+                    }
+                </td>
+                <td>
+                    @item.Gia.ToString("N0")đ
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaDmNavigation.TenDm)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrangThai)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaMon" class="btn btn-sm btn-warning">Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.MaMon" class="btn btn-sm btn-info">Xem</a>
+                    <a asp-action="Delete" asp-route-id="@item.MaMon" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
