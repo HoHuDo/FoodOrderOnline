@@ -7,7 +7,7 @@ namespace FoodOrderOnline.ViewModels
         // 1. Dùng để hiển thị tóm tắt đơn hàng (bên phải)
         public GioHangVM Summary { get; set; } = new GioHangVM();
 
-        // 2. Dùng để binding vào form (bên trái)
+
         [Required(ErrorMessage = "Vui lòng nhập họ tên")]
         public string HoTen { get; set; }
 
@@ -22,6 +22,6 @@ namespace FoodOrderOnline.ViewModels
         [Required(ErrorMessage = "Vui lòng nhập địa chỉ")]
         public string DiaChi { get; set; }
 
-        public string? GhiChu { get; set; } // Ghi chú (tùy chọn)
+        public string? GhiChu { get; set; }
     }
 }

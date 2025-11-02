@@ -57,10 +57,8 @@
                             <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
                             <div class="dropdown-menu dropdown-menu-right">
 
-                                @* SỬA: Đổi <button> thành <a> và thêm asp-action *@
                                 <a class="dropdown-item" asp-controller="TaiKhoan" asp-action="Login">Đăng nhập</a>
 
-                                @* SỬA: Đổi <button> thành <a> và thêm asp-action *@
                                 <a class="dropdown-item" asp-controller="TaiKhoan" asp-action="Register">Đăng ký</a>
                                 <a class="dropdown-item" asp-controller="TaiKhoan" asp-action="Logout">Đăng xuất</a>
 
@@ -202,15 +200,11 @@
 
 
 
-    @* SỬA LỖI 5: Đổi link CDN (đang lỗi) sang link LOCAL *@
-    @* Dựa trên ảnh wwwroot của bạn, file jquery.js nằm ở đây: *@
     <script src="~/lib/jquery/dist/jquery.js"></script>
 
-    @* Chúng ta vẫn dùng CDN cho Bootstrap, nhưng thêm fallback (dự phòng) *@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script>
         if (typeof($.fn.modal) === 'undefined') {
-            // Nếu Bootstrap không tải được, dùng link local (giả sử bạn có)
             document.write('<script src="~/lib/bootstrap/bootstrap.bundle.min.js"><\/script>');
         }
     </script>
@@ -222,55 +216,47 @@
 
     <script src="~/js/main.js" asp-append-version="true"></script>
 
-    @* === BẮT ĐẦU SỬA: SCRIPT GIỎ HÀNG VÀ ANIMATION (CHỈ ICON) === *@
     <script>
         $(document).ready(function () {
 
-            // Bắt sự kiện click trên *bất kỳ* nút nào có class 'add-to-cart-btn'
             $(document).on('click', '.add-to-cart-btn', function (e) {
                 e.preventDefault();
 
                 var $button = $(this);
-                // Thoát nếu nút đã được click (đang xử lý)
                 if ($button.find('i').hasClass('fa-spinner') || $button.find('i').hasClass('fa-check')) {
                     return;
                 }
 
                 var maMon = $button.data('id');
 
-                // --- 1. Xử lý Animation (Sửa logic) ---
-
-                // Mục tiêu (giỏ hàng trên header)
                 var $cartTarget = $('#header-cart-icon');
 
-                // TẠO MỘT ICON GIỎ HÀNG MỚI
                 var $iconClone = $('<i class="fa fa-shopping-cart text-primary"></i>')
                     .offset({
-                        top: $button.offset().top + 5,  // Lấy vị trí của nút vừa click
-                        left: $button.offset().left + 5 // Lấy vị trí của nút vừa click
+                        top: $button.offset().top + 5,  
+                        left: $button.offset().left + 5 
                     })
                     .css({
                         'opacity': '0.8',
                         'position': 'absolute',
-                        'font-size': '20px', // Kích thước icon khởi đầu
+                        'font-size': '20px', 
                         'z-index': '10000'
                     });
 
-                // Thêm icon vào trang
+            
                 $('body').append($iconClone);
 
-                // Bắt đầu cho icon bay về phía giỏ hàng
+               
                 $iconClone.animate({
                     'top': $cartTarget.offset().top + 10,
                     'left': $cartTarget.offset().left + 10,
-                    'font-size': '15px', // Co nhỏ lại khi bay
+                    'font-size': '15px',
                     'opacity': 0.3
                 }, 1000, 'easeInOutExpo', function () {
-                    $(this).remove(); // Tự xóa khi bay xong
+                    $(this).remove();
                 });
 
-                // --- 2. Xử lý AJAX (Thêm vào giỏ) ---
-                $button.html('<i class="fa fa-spinner fa-spin"></i>'); // Hiển thị loading
+                $button.html('<i class="fa fa-spinner fa-spin"></i>');
 
                 $.ajax({
                     url: '@Url.Action("AddToCart", "GioHang")',
@@ -296,7 +282,6 @@
             });
         });
     </script>
-    @* Dòng này RẤT QUAN TRỌNG, nó dùng để chạy script "Add to Cart" *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

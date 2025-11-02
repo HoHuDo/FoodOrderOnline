@@ -9,14 +9,12 @@
                 <img class="img-fluid w-100" src="~/@item.HinhAnh" alt="@item.TenMon">
 
                 <div class="product-action">
-                    @* SỬA LỖI 1: Thêm class 'add-to-cart-btn' và 'data-id' *@
                     <a class="btn btn-outline-dark btn-square add-to-cart-btn" href="#" data-id="@item.MaMon">
                         <i class="fa fa-shopping-cart"></i>
                     </a>
 
                     <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
 
-                    @* SỬA LỖI 2: Link chi tiết trỏ đến MonAn/ChiTiet *@
                     <a class="btn btn-outline-dark btn-square"
                        asp-controller="ChiTietMon"
                        asp-action="Index"
@@ -28,7 +26,6 @@
             </div>
             <div class="text-center py-4">
 
-                @* SỬA LỖI 2: Link chi tiết trỏ đến MonAn/ChiTiet *@
                 <a class="h6 text-decoration-none text-truncate"
                    asp-controller="MonAn"
                    asp-action="ChiTiet"

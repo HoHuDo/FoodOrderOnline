@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Món Ăn";
 
-    // Lấy trạng thái filter do controller bơm vào
     var selectedDanhMucIds = ViewBag.SelectedDanhMucIds as IEnumerable<int> ?? Enumerable.Empty<int>();
     var selectedPriceRanges = ViewBag.SelectedPriceRanges as IEnumerable<string> ?? new[] { "all" };
     var sortByServer = ViewBag.SortBy as string ?? "price_asc";
@@ -29,7 +28,7 @@
             <div class="bg-light p-4 mb-30">
                 <form id="filter-danhmuc">
                     @await Component.InvokeAsync("TongMonAn")
-                    @* Truyền danh sách đã chọn sang ViewComponent *@
+                   
                     @await Component.InvokeAsync("DanhMucMonAn", new { selectedIds = selectedDanhMucIds })
                 </form>
             </div>
@@ -39,9 +38,9 @@
             </h5>
             <div class="bg-light p-4 mb-30">
                 <form id="filter-price">
-                    @* Nếu VC LocTheoGia nhận tham số 'selected' *@
+                  
                     @await Component.InvokeAsync("LocTheoGia", new { selected = selectedPriceRanges })
-                    @* Nếu chưa nhận tham số, tớ sẽ gửi bạn file VC để sửa ở mục 3 *@
+                  
                 </form>
             </div>
 
@@ -85,11 +84,9 @@
     <script>
         $(function () {
 
-            // ===== Khởi tạo theo trạng thái server =====
             var currentPage = 1;
             var currentSortBy = '@sortByServer';
 
-            // Set text cho nút sort theo currentSortBy ban đầu
             if (currentSortBy === 'price_desc') {
                 $('#sort-button').text('Giá (Cao-Thấp)');
             } else {
@@ -142,19 +139,16 @@
                 });
             }
 
-            // Checkbox thay đổi → lọc
             $(document).on('change', '.dm-checkbox, .price-checkbox', function () {
                 locSanPham(1);
             });
 
-            // Phân trang
             $(document).on('click', '.pagination-link', function (e) {
                 e.preventDefault();
                 var page = $(this).data('page');
                 locSanPham(page);
             });
 
-            // Sort
             $(document).on('click', '.sort-link', function (e) {
                 e.preventDefault();
                 currentSortBy = $(this).data('sort');
@@ -162,7 +156,6 @@
                 locSanPham(1);
             });
 
-            // Logic "All" cho danh mục
             $(document).on('change', '.dm-checkbox', function () {
                 var isChecked = $(this).is(':checked');
                 var val = $(this).val();
@@ -173,7 +166,6 @@
                 }
             });
 
-            // Logic "All" cho giá
             $(document).on('change', '.price-checkbox', function () {
                 var isChecked = $(this).is(':checked');
                 var val = $(this).val();
@@ -184,7 +176,6 @@
                 }
             });
 
-            // (Nếu bạn có ô search)
             $(document).on('submit', '#search-form', function (e) {
                 e.preventDefault();
                 locSanPham(1);

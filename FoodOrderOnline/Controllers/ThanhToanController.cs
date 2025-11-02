@@ -16,7 +16,7 @@ namespace FoodOrderOnline.Controllers
         }
 
         #region Helper Functions
-        // ... (Các hàm GetCartItems, GetCoupon, BuildCartViewModel của bạn giữ nguyên) ...
+
         List<GioHangItem> GetCartItems()
         {
             var cart = HttpContext.Session.GetObjectFromJson<List<GioHangItem>>(GioHangController.CART_KEY);
@@ -64,7 +64,7 @@ namespace FoodOrderOnline.Controllers
         }
         #endregion
 
-        // 1. HIỂN THỊ TRANG THANH TOÁN (GET)
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -81,7 +81,7 @@ namespace FoodOrderOnline.Controllers
             return View(checkoutVM);
         }
 
-        // 2. XỬ LÝ ĐẶT HÀNG (POST)
+
         [HttpPost]
         public async Task<IActionResult> Index(ThanhToanVM model)
         {
@@ -102,17 +102,16 @@ namespace FoodOrderOnline.Controllers
             using var transaction = await db.Database.BeginTransactionAsync();
             try
             {
-                // === SỬA LỖI BẮT ĐẦU TỪ ĐÂY ===
 
-                // BƯỚC 1: Tìm hoặc Tạo Khách Hàng
+
                 KhachHang khachHang;
 
-                // 1.1. Thử tìm khách hàng bằng Email (vì Email thường là UNIQUE)
+
                 khachHang = await db.KhachHangs.FirstOrDefaultAsync(k => k.Email == model.Email);
 
                 if (khachHang == null)
                 {
-                    // 1.2. Nếu KHÔNG TÌM THẤY -> Tạo khách hàng mới
+
                     khachHang = new KhachHang
                     {
                         HoTen = model.HoTen,
@@ -120,31 +119,27 @@ namespace FoodOrderOnline.Controllers
                         SoDienThoai = model.SoDienThoai,
                         DiaChi = model.DiaChi,
 
-                        // LƯU Ý: Nếu bảng KhachHang có cột UNIQUE (ví dụ: TenDangNhap)
-                        // Bạn BẮT BUỘC phải gán giá trị cho nó ở đây.
-                        // Ví dụ (nếu cột UNIQUE là TenDangNhap):
-                        // TenDangNhap = model.Email 
+
                     };
                     db.KhachHangs.Add(khachHang);
                 }
                 else
                 {
-                    // 1.3. Nếu TÌM THẤY -> Cập nhật thông tin (tùy chọn)
+
                     khachHang.HoTen = model.HoTen;
                     khachHang.SoDienThoai = model.SoDienThoai;
                     khachHang.DiaChi = model.DiaChi;
                     db.KhachHangs.Update(khachHang);
                 }
 
-                await db.SaveChangesAsync(); // Lưu thay đổi (Thêm mới hoặc Cập nhật) để có MaKh
-
-                // === KẾT THÚC SỬA LỖI ===
+                await db.SaveChangesAsync();
 
 
-                // BƯỚC 2: TẠO ĐƠN HÀNG (Giữ nguyên)
+
+
                 var donHang = new DonHang
                 {
-                    MaKh = khachHang.MaKh, // <-- Lấy MaKh (hoặc mới hoặc cũ)
+                    MaKh = khachHang.MaKh,
                     NgayDat = DateTime.Now,
                     DiaChiGiao = model.DiaChi,
                     GhiChu = model.GhiChu,
@@ -155,7 +150,7 @@ namespace FoodOrderOnline.Controllers
                     PhuongThucThanhToan = "COD"
                 };
 
-                // BƯỚC 3: XỬ LÝ VOUCHER (Giữ nguyên)
+
                 if (!string.IsNullOrEmpty(gioHangVM.CouponCode))
                 {
                     var voucher = await db.Vouchers.FirstOrDefaultAsync(v => v.MaCode == gioHangVM.CouponCode);
@@ -167,9 +162,9 @@ namespace FoodOrderOnline.Controllers
                 }
 
                 db.DonHangs.Add(donHang);
-                await db.SaveChangesAsync(); // Lưu để lấy MaDh
+                await db.SaveChangesAsync();
 
-                // BƯỚC 4: TẠO CHI TIẾT ĐƠN HÀNG (Giữ nguyên)
+
                 var chiTietDonHangs = new List<ChiTietDonHang>();
                 foreach (var item in gioHangVM.CartItems)
                 {
@@ -189,24 +184,23 @@ namespace FoodOrderOnline.Controllers
 
                 await transaction.CommitAsync();
 
-                // BƯỚC 5: DỌN DẸP GIỎ HÀNG (Giữ nguyên)
+
                 HttpContext.Session.Remove(GioHangController.CART_KEY);
                 HttpContext.Session.Remove(GioHangController.COUPON_KEY);
 
-                // BƯỚC 6: CHUYỂN TRANG THÀNH CÔNG (Giữ nguyên)
+
                 return RedirectToAction("DatHangThanhCong", new { id = donHang.MaDh });
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
 
-                // BÂY GIỜ HÃY DÙNG DEBUGGER (F5) VÀ XEM 'ex.InnerException.Message'
+
                 ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi khi đặt hàng. Vui lòng thử lại.");
                 return View(model);
             }
         }
 
-        // 3. TRANG THÀNH CÔNG
         public IActionResult DatHangThanhCong(int id)
         {
             ViewBag.MaDonHang = id;

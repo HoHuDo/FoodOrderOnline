@@ -6,7 +6,6 @@
 @using FoodOrderOnline.ViewModels
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    // Dòng này sẽ lấy giỏ hàng từ Session
     var cart = HttpContextAccessor.HttpContext.Session
         .GetObjectFromJson<List<GioHangItem>>(GioHangController.CART_KEY) ?? new List<GioHangItem>();
 }
@@ -59,10 +58,8 @@
                             <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
                             <div class="dropdown-menu dropdown-menu-right">
 
-                                @* SỬA: Đổi <button> thành <a> và thêm asp-action *@
                                 <a class="dropdown-item" asp-controller="TaiKhoan" asp-action="Login">Đăng nhập</a>
 
-                                @* SỬA: Đổi <button> thành <a> và thêm asp-action *@
                                 <a class="dropdown-item" asp-controller="TaiKhoan" asp-action="Register">Đăng ký</a>
                                 <a class="dropdown-item" asp-controller="TaiKhoan" asp-action="Logout">Đăng xuất</a>
 

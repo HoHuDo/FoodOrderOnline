@@ -15,22 +15,22 @@ namespace FoodOrderOnline.Controllers
 
         public MonAnController(FoodOrderContext context) => db = context;
 
-        // /MonAn?danhMucId=3&sortBy=price_asc&page=1
+
         public async Task<IActionResult> Index(
             int page = 1,
             string sortBy = "price_asc",
-            int? danhMucId = null,                    // <-- nhận từ Trang chủ
-            List<int>? danhMucIds = null,             // <-- nhận khi người dùng lọc nhiều danh mục
-            List<string>? priceRanges = null          // <-- nhận khi có filter khoảng giá
+            int? danhMucId = null,
+            List<int>? danhMucIds = null,
+            List<string>? priceRanges = null
         )
         {
-            // Gộp tham số: nếu gọi từ Trang chủ (chỉ có danhMucId) thì chuyển thành danhMucIds
+
             if ((danhMucIds == null || danhMucIds.Count == 0) && danhMucId.HasValue)
                 danhMucIds = new List<int> { danhMucId.Value };
 
             page = Math.Max(1, page);
 
-            // Build query dùng chung
+
             var query = BuildMonAnQuery(danhMucIds, priceRanges, sortBy);
 
             var totalItems = await query.CountAsync();
@@ -54,12 +54,12 @@ namespace FoodOrderOnline.Controllers
                 }
             };
 
-            // Truyền trạng thái filter cho View để tự "chọn sẵn"
+
             ViewBag.SelectedDanhMucIds = danhMucIds ?? new List<int>();
             ViewBag.SelectedPriceRanges = priceRanges ?? new List<string>();
             ViewBag.SortBy = sortBy;
 
-            // (tuỳ chọn) truyền toàn bộ danh mục để render filter
+
             ViewBag.AllDanhMucs = await db.DanhMucs
                                           .OrderBy(d => d.TenDm)
                                           .Select(d => new SelectListItem { Value = d.MaDm.ToString(), Text = d.TenDm })
@@ -68,7 +68,7 @@ namespace FoodOrderOnline.Controllers
             return View(viewModel);
         }
 
-        // AJAX lọc dữ liệu (giữ nguyên API cũ)
+
         public async Task<IActionResult> LocMonAn(
             List<int> danhMucIds,
             List<string> priceRanges,
@@ -107,18 +107,18 @@ namespace FoodOrderOnline.Controllers
             });
         }
 
-        // ======= Private: build query dùng chung cho Index & LocMonAn =======
+
         private IQueryable<MonAn> BuildMonAnQuery(IEnumerable<int>? danhMucIds, IEnumerable<string>? priceRanges, string sortBy)
         {
             var query = db.MonAns.AsQueryable();
 
-            // lọc theo danh mục (1 hoặc nhiều)
+
             if (danhMucIds != null && danhMucIds.Any())
             {
                 query = query.Where(m => m.MaDm.HasValue && danhMucIds.Contains(m.MaDm.Value));
             }
 
-            // lọc theo khoảng giá
+
             if (priceRanges != null)
             {
                 var ranges = priceRanges.ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -134,7 +134,7 @@ namespace FoodOrderOnline.Controllers
                 }
             }
 
-            // sắp xếp
+
             query = sortBy switch
             {
                 "price_desc" => query.OrderByDescending(m => m.Gia),
@@ -145,7 +145,7 @@ namespace FoodOrderOnline.Controllers
         }
     }
 
-    // ========== Render partial ra string cho JSON ==========
+
     public static class ControllerExtensions
     {
         public static async Task<string> RenderViewToStringAsync<TModel>(this Controller controller, string viewName, TModel model)

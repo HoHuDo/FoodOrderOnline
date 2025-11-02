@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/TaiKhoan/Login"; // Trang đăng nhập
-        options.AccessDeniedPath = "/TaiKhoan/AccessDenied"; // Trang cấm truy cập
-        options.ExpireTimeSpan = TimeSpan.FromDays(30); // Thời gian "nhớ"
+        options.LoginPath = "/TaiKhoan/Login";
+        options.AccessDeniedPath = "/TaiKhoan/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(30);
     });
 
 builder.Services.AddControllersWithViews();
@@ -18,14 +18,11 @@ builder.Services.AddDbContext<FoodOrderContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("FoodOrderOnline"));
 });
-
-// Đăng ký session (chỉ 1 lần cache)
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    // options.IdleTimeout = TimeSpan.FromMinutes(20);
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPasswordHasher<TaiKhoan>, PasswordHasher<TaiKhoan>>();
@@ -42,7 +39,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// 👉 BẬT SESSION Ở ĐÂY (trước MapControllerRoute)
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();

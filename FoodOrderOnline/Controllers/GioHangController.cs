@@ -1,4 +1,4 @@
-﻿using FoodOrderOnline.Helpers; // SỬA: Đã thêm dòng này
+﻿using FoodOrderOnline.Helpers;
 using FoodOrderOnline.Models;
 using FoodOrderOnline.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -38,20 +38,19 @@ namespace FoodOrderOnline.Controllers
         {
             var cart = GetCartItems();
             var voucher = GetCoupon();
-            // SỬA: Dùng 'decimal' cho subtotal
+
             decimal subtotal = cart.Sum(item => item.ThanhTien);
 
             var viewModel = new GioHangVM
             {
                 CartItems = cart,
-                Shipping = 25000 // Tự động là decimal
+                Shipping = 25000
             };
 
             if (voucher != null)
             {
                 viewModel.CouponCode = voucher.MaCode;
 
-                // SỬA: Giờ tất cả đều là 'decimal', không còn lỗi so sánh
                 if (subtotal < voucher.DieuKienDonHangTu)
                 {
                     viewModel.CouponDiscount = 0;
@@ -61,7 +60,7 @@ namespace FoodOrderOnline.Controllers
                 {
                     if (voucher.LoaiGiamGia == "PhanTram")
                     {
-                        // SỬA: Phép tính 'decimal'
+
                         decimal discount = subtotal * (voucher.GiaTri / 100);
                         if (voucher.GiamToiDa.HasValue && discount > voucher.GiamToiDa.Value)
                         {
@@ -105,7 +104,7 @@ namespace FoodOrderOnline.Controllers
                 {
                     MaMon = monAn.MaMon,
                     TenMon = monAn.TenMon,
-                    Gia = monAn.Gia, // SỬA: Tự động gán decimal vào decimal
+                    Gia = monAn.Gia,
                     HinhAnh = monAn.HinhAnh,
                     SoLuong = soLuong
                 };
@@ -168,9 +167,6 @@ namespace FoodOrderOnline.Controllers
 
             var voucher = await db.Vouchers.FirstOrDefaultAsync(v => v.MaCode == couponCode);
 
-            // SỬA LỖI 'bool? != int':
-            // Dựa trên ảnh của bạn, 'TrangThai' là 'int' (giá trị 1).
-            // Hãy đảm bảo model 'Voucher.cs' của bạn có: public int TrangThai { get; set; }
             if (voucher == null || voucher.TrangThai != true)
             {
                 HttpContext.Session.Remove(COUPON_KEY);
@@ -187,7 +183,7 @@ namespace FoodOrderOnline.Controllers
                 return Json(new { success = false, message = "Mã giảm giá đã hết lượt sử dụng.", summary = BuildCartViewModel() });
             }
 
-            // SỬA: Dùng 'decimal'
+
             decimal subtotal = GetCartItems().Sum(item => item.ThanhTien);
             if (subtotal < voucher.DieuKienDonHangTu)
             {

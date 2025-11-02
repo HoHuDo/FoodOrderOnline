@@ -8,12 +8,11 @@ namespace FoodOrderOnline.ViewModels
         [Display(Name = "Họ và Tên")]
         public string HoTen { get; set; }
 
-        // === THÊM MỚI ===
+
         [Required(ErrorMessage = "Vui lòng nhập tên đăng nhập")]
         [Display(Name = "Tên đăng nhập")]
-        // (Bạn có thể thêm validation khác, ví dụ: MinLength)
+
         public string TenDangNhap { get; set; }
-        // ================
 
         [Required(ErrorMessage = "Vui lòng nhập Email")]
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]

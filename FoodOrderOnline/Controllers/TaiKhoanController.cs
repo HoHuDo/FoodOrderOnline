@@ -5,15 +5,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-// (Không cần 'using Microsoft.AspNetCore.Identity;' nữa)
-
 namespace FoodOrderOnline.Controllers
 {
     public class TaiKhoanController : Controller
     {
         private readonly FoodOrderContext db;
 
-        // SỬA 1: Gỡ bỏ IPasswordHasher
         public TaiKhoanController(FoodOrderContext context)
         {
             db = context;
@@ -57,7 +54,7 @@ namespace FoodOrderOnline.Controllers
                     VaiTro = "KhachHang",
                     TrangThai = true,
 
-                    // SỬA 2: Lưu mật khẩu (văn bản thuần) trực tiếp
+
                     MatKhau = model.MatKhau
                 };
 
@@ -110,14 +107,13 @@ namespace FoodOrderOnline.Controllers
                 .Include(tk => tk.NhanVien)
                 .FirstOrDefaultAsync(t => t.TenDangNhap == model.TenDangNhap);
 
-            // SỬA 3: So sánh mật khẩu (văn bản thuần) trực tiếp
             if (taiKhoan == null || taiKhoan.MatKhau != model.MatKhau || taiKhoan.TrangThai != true)
             {
                 ModelState.AddModelError(string.Empty, "Tên đăng nhập hoặc mật khẩu không đúng.");
                 return View(model);
             }
 
-            // (Phần tạo Cookie và Claims giữ nguyên)
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, taiKhoan.KhachHang?.HoTen ?? taiKhoan.NhanVien?.HoTen ?? taiKhoan.TenDangNhap),

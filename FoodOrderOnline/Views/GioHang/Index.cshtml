@@ -1,4 +1,4 @@
-﻿@* SỬA 1: Đổi tên Model *@
+﻿
 @model FoodOrderOnline.ViewModels.GioHangVM
 @{
     ViewData["Title"] = "Giỏ hàng";
@@ -112,26 +112,23 @@
     <script>
         $(document).ready(function () {
 
-            // SỬA 3: Đổi tên Controller
+           
             var updateUrl = '@Url.Action("UpdateCart", "GioHang")';
             var removeUrl = '@Url.Action("RemoveFromCart", "GioHang")';
             var couponUrl = '@Url.Action("ApplyCoupon", "GioHang")';
 
-            // Định dạng tiền tệ
             const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
 
-            // --- HÀM 1: CẬP NHẬT TÓM TẮT GIỎ HÀNG (BÊN PHẢI) ---
             function updateCartSummary(summary) {
                 $('#cart-subtotal').text(currencyFormatter.format(summary.subtotal));
                 $('#cart-shipping').text(currencyFormatter.format(summary.shipping));
                 $('#cart-total').text(currencyFormatter.format(summary.total));
 
-                // Cập nhật số lượng trên header (nếu có)
                 if (summary.cartItems) {
                      $('#cart-count').text(summary.cartItems.length);
                 }
 
-                // Xử lý hiển thị mã giảm giá
+           
                 if (summary.couponDiscount > 0) {
                     $('#cart-discount').text('-' + currencyFormatter.format(summary.couponDiscount));
                     $('#coupon-display').find('h6:first').text('Giảm giá (' + summary.couponCode + ')');
@@ -140,7 +137,6 @@
                     $('#coupon-display').hide();
                 }
 
-                // Hiển thị thông báo (nếu có)
                  if (summary.couponMessage) {
                     $('#coupon-message').text(summary.couponMessage).removeClass('text-success').addClass('text-danger').show();
                 } else if (summary.couponCode) {
@@ -151,7 +147,7 @@
                 }
             }
 
-            // --- SỰ KIỆN 2: CLICK NÚT +/- (CẬP NHẬT SỐ LƯỢNG) ---
+         
             $('#cart-table-body').on('click', '.btn-update', function () {
                 var $button = $(this);
                 var $row = $button.closest('tr');
@@ -184,14 +180,14 @@
                             if (response.success) {
                                 $row.find('.item-total').text(currencyFormatter.format(response.itemTotal));
                                 updateCartSummary(response.summary);
-                                $('#cart-count').text(response.cartCount); // Cập nhật header
+                                $('#cart-count').text(response.cartCount); 
                             }
                         }
                     });
                 }
             });
 
-            // --- SỰ KIỆN 3: CLICK NÚT X (XÓA SẢN PHẨM) ---
+           
             $('#cart-table-body').on('click', '.btn-remove', function () {
                 var $button = $(this);
                 var $row = $button.closest('tr');
@@ -208,20 +204,18 @@
                             if (response.success) {
                                 $row.fadeOut(300, function() {
                                     $(this).remove();
-                                    // Kiểm tra nếu giỏ hàng rỗng
+                                 
                                     if ($('#cart-table-body tr').length === 0) {
                                         $('#cart-table-body').html('<tr><td colspan="5">Giỏ hàng của bạn đang trống.</td></tr>');
                                     }
                                 });
                                 updateCartSummary(response.summary);
-                                $('#cart-count').text(response.cartCount); // Cập nhật header
+                                $('#cart-count').text(response.cartCount); 
                             }
                         }
                     });
                 }
             });
-
-            // --- SỰ KIỆN 4: ÁP DỤNG MÃ GIẢM GIÁ ---
             $('#coupon-form').on('submit', function (e) {
                 e.preventDefault();
                 var code = $(this).find('input[name="couponCode"]').val();
