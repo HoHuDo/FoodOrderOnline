@@ -3,6 +3,13 @@
     var selectedIds = (IEnumerable<int>)(ViewBag.SelectedIds ?? Enumerable.Empty<int>());
     bool checkAll = !selectedIds.Any(); 
 }
+<div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+    <input type="checkbox"
+           class="custom-control-input dm-checkbox"
+           id="dm-all"
+           value="all" @(checkAll ? "checked" : "") />
+    <label class="custom-control-label" for="dm-all">Tất cả</label>
+</div>
 @foreach (var dm in Model)
 {
     var isChecked = selectedIds.Contains(dm.MaDm);

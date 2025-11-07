@@ -26,7 +26,6 @@
             </h5>
             <div class="bg-light p-4 mb-30">
                 <form id="filter-danhmuc">
-                    @await Component.InvokeAsync("TongMonAn")
                     @await Component.InvokeAsync("DanhMucMonAn", new { selectedIds = selectedDanhMucIds })
                 </form>
             </div>

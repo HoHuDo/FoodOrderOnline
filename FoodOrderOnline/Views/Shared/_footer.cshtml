@@ -1,10 +1,9 @@
-﻿@* SỬA 1: Chúng ta cần truy cập 'User' để biết đã đăng nhập hay chưa *@
+﻿
 @using System.Security.Claims
 
 <div class="container-fluid bg-shopee-orange text-secondary mt-5 pt-5">
     <div class="row pt-5">
         <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
-            @* SỬA 2: Dịch và cập nhật thông tin tĩnh *@
             <h5 class="text-secondary text-uppercase mb-4">Liên hệ</h5>
             <p class="mb-4">Chúng tôi luôn sẵn sàng phục vụ bạn 24/7. Đừng ngần ngại liên hệ khi cần hỗ trợ hoặc đặt món.</p>
             <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Đường ABC, Q.1, TP.HCM</p>
@@ -15,7 +14,6 @@
             <div class="row">
                 <div class="col-md-4 mb-5">
                     <h5 class="text-secondary text-uppercase mb-4">Menu Nhanh</h5>
-                    @* SỬA 3: Dùng Tag Helper cho các link *@
                     <div class="d-flex flex-column justify-content-start">
                         <a class="text-secondary mb-2" asp-controller="TrangChu" asp-action="Index"><i class="fa fa-angle-right mr-2"></i>Trang chủ</a>
                         <a class="text-secondary mb-2" asp-controller="MonAn" asp-action="Index"><i class="fa fa-angle-right mr-2"></i>Món ăn</a>
@@ -26,7 +24,6 @@
                 </div>
                 <div class="col-md-4 mb-5">
                     <h5 class="text-secondary text-uppercase mb-4">Tài Khoản</h5>
-                    @* SỬA 4: Hiển thị link động dựa trên trạng thái đăng nhập *@
                     <div class="d-flex flex-column justify-content-start">
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -41,7 +38,6 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-5">
-                    @* (Phần Newsletter giữ nguyên) *@
                     <h5 class="text-secondary text-uppercase mb-4">Bản tin</h5>
                     <p>Đăng ký để nhận thông báo về các món ăn mới và ưu đãi đặc biệt.</p>
                     <form action="">
@@ -70,8 +66,7 @@
             </p>
         </div>
         <div class="col-md-6 px-xl-0 text-center text-md-right">
-            @* SỬA 5: Thêm dấu ~/ vào đường dẫn ảnh *@
-            <img class="img-fluid" src="~/img/payments.png" alt="">
+            <img class="img-fluid" src="~/images/payments.png" alt="">
         </div>
     </div>
 </div>
