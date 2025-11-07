@@ -20,7 +20,7 @@
         public decimal Subtotal => CartItems.Sum(item => item.ThanhTien);
 
 
-        public decimal Shipping { get; set; } = 0;
+        public decimal Shipping { get; set; } = 25000;
 
 
         public decimal CouponDiscount { get; set; } = 0;
