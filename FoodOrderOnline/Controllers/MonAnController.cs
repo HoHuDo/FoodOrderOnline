@@ -15,23 +15,17 @@ namespace FoodOrderOnline.Controllers
 
         public MonAnController(FoodOrderContext context) => db = context;
 
-
         public async Task<IActionResult> Index(
             int page = 1,
             string sortBy = "price_asc",
-            int? danhMucId = null,
+            string? searchQuery = null,
             List<int>? danhMucIds = null,
             List<string>? priceRanges = null
         )
         {
-
-            if ((danhMucIds == null || danhMucIds.Count == 0) && danhMucId.HasValue)
-                danhMucIds = new List<int> { danhMucId.Value };
-
             page = Math.Max(1, page);
 
-
-            var query = BuildMonAnQuery(danhMucIds, priceRanges, sortBy);
+            var query = BuildMonAnQuery(searchQuery, danhMucIds, priceRanges, sortBy);
 
             var totalItems = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
@@ -51,19 +45,13 @@ namespace FoodOrderOnline.Controllers
                     TotalPages = totalPages,
                     PageSize = pageSize,
                     TotalItems = totalItems
-                }
+                },
+                SelectedDanhMucIds = danhMucIds ?? new List<int>()
             };
 
-
-            ViewBag.SelectedDanhMucIds = danhMucIds ?? new List<int>();
+            ViewData["SearchQuery"] = searchQuery;
             ViewBag.SelectedPriceRanges = priceRanges ?? new List<string>();
             ViewBag.SortBy = sortBy;
-
-
-            ViewBag.AllDanhMucs = await db.DanhMucs
-                                          .OrderBy(d => d.TenDm)
-                                          .Select(d => new SelectListItem { Value = d.MaDm.ToString(), Text = d.TenDm })
-                                          .ToListAsync();
 
             return View(viewModel);
         }
@@ -72,12 +60,13 @@ namespace FoodOrderOnline.Controllers
         public async Task<IActionResult> LocMonAn(
             List<int> danhMucIds,
             List<string> priceRanges,
+            string? searchQuery = null,
             int page = 1,
             string sortBy = "price_asc")
         {
             page = Math.Max(1, page);
 
-            var query = BuildMonAnQuery(danhMucIds, priceRanges, sortBy);
+            var query = BuildMonAnQuery(searchQuery, danhMucIds, priceRanges, sortBy);
 
             var totalItems = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
@@ -108,16 +97,19 @@ namespace FoodOrderOnline.Controllers
         }
 
 
-        private IQueryable<MonAn> BuildMonAnQuery(IEnumerable<int>? danhMucIds, IEnumerable<string>? priceRanges, string sortBy)
+        private IQueryable<MonAn> BuildMonAnQuery(string? searchQuery, IEnumerable<int>? danhMucIds, IEnumerable<string>? priceRanges, string sortBy)
         {
             var query = db.MonAns.AsQueryable();
 
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(m => m.TenMon.ToLower().Contains(searchQuery.ToLower()));
+            }
 
             if (danhMucIds != null && danhMucIds.Any())
             {
                 query = query.Where(m => m.MaDm.HasValue && danhMucIds.Contains(m.MaDm.Value));
             }
-
 
             if (priceRanges != null)
             {
@@ -134,7 +126,6 @@ namespace FoodOrderOnline.Controllers
                 }
             }
 
-
             query = sortBy switch
             {
                 "price_desc" => query.OrderByDescending(m => m.Gia),
@@ -144,7 +135,6 @@ namespace FoodOrderOnline.Controllers
             return query;
         }
     }
-
 
     public static class ControllerExtensions
     {

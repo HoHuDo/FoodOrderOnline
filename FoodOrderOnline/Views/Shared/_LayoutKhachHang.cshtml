@@ -5,7 +5,7 @@
 @using FoodOrderOnline.Helpers
 @using FoodOrderOnline.ViewModels
 @inject IHttpContextAccessor HttpContextAccessor
-@{  // Dòng này sẽ lấy giỏ hàng từ Session
+@{
     var cart = HttpContextAccessor.HttpContext.Session
         .GetObjectFromJson<List<GioHangItem>>(GioHangController.CART_KEY) ?? new List<GioHangItem>();
 }
@@ -19,28 +19,22 @@
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
 
-    <!-- Favicon -->
     <link type="image/png" sizes="16x16" rel="icon" href="~/images/icons8-food-bar-bubbles-16.png">
     <link type="image/png" sizes="32x32" rel="icon" href="~/images/icons8-food-bar-bubbles-32.png">
 
-    <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
     <link href="~/lib/animate/animate.min.css" rel="stylesheet" />
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
     <link href="~/lib/owlcarousel/assets/owl.theme.default.min.css" rel="stylesheet" />
 
-    <!-- Customized Bootstrap Stylesheet -->
     <link href="~/css/style.css" rel="stylesheet">
 </head>
 <body>
     <div>
-        <!-- Topbar Start -->
         <div class="container-fluid">
             <div class="row bg-secondary py-1 px-xl-5">
                 <div class="col-lg-6 d-none d-lg-block">
@@ -102,11 +96,14 @@
 
                 </div>
                 <div class="col-lg-4 col-6 text-left">
-                    <form action="" id="search-form">
+
+                    <form asp-controller="MonAn" asp-action="Index" method="get">
                         <div class="input-group">
                             <input type="text" class="form-control"
                                    id="search-input"
-                                   placeholder="Tìm kiếm món ăn...">
+                                   name="searchQuery"
+                                   placeholder="Tìm kiếm món ăn..."
+                                   value="@ViewData["SearchQuery"]">
 
                             <div class="input-group-append">
                                 <button type="submit" class="input-group-text bg-transparent text-primary"
@@ -123,9 +120,7 @@
                 </div>
             </div>
         </div>
-        <!-- Topbar End -->
-        <!-- Navbar Start -->
-        <div class="bg-shopee-orange container-fluid  mb-30">
+        <div class="bg-shopee-orange container-fluid mb-30">
             <div class="row px-xl-5">
                 <div class="col-lg-3 d-none d-lg-block">
                     <a class="btn d-flex align-items-center justify-content-between bg-primary w-100" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; padding: 0 30px;">
@@ -134,7 +129,7 @@
                     </a>
                     <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light" id="navbar-vertical" style="width: calc(100% - 30px); z-index: 999;">
                         <div class="navbar-nav w-100">
-                            @await Component.InvokeAsync("DanhMuc");
+                            @await Component.InvokeAsync("DanhMuc")
                         </div>
                     </nav>
                 </div>
@@ -154,9 +149,6 @@
 
                                 <a asp-controller="MonAn" asp-action="Index"
                                    class="nav-item nav-link @(ctl == "MonAn" ? "active" : "")">Món ăn</a>
-
-                                <a asp-controller="ChiTietMon" asp-action="Index" 
-                                   class="nav-item nav-link @(ctl == "ChiTietMon" ? "active" : "")">Chi tiết món</a>
 
                                 <a asp-controller="GioHang" asp-action="Index"
                                    class="nav-item nav-link @(ctl == "GioHang" ? "active" : "")">Giỏ hàng</a>
@@ -184,21 +176,13 @@
                 </div>
             </div>
         </div>
-        <!-- Navbar End -->
         @RenderBody()
 
         @await Html.PartialAsync("_Footer")
-        
+
     </div>
-        
-        
-        
-    
-    <!-- Back to Top -->
+
     <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-
-
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
 
@@ -218,7 +202,6 @@
 
     <script>
         $(document).ready(function () {
-
             $(document).on('click', '.add-to-cart-btn', function (e) {
                 e.preventDefault();
 
@@ -228,25 +211,22 @@
                 }
 
                 var maMon = $button.data('id');
-
                 var $cartTarget = $('#header-cart-icon');
 
                 var $iconClone = $('<i class="fa fa-shopping-cart text-primary"></i>')
                     .offset({
-                        top: $button.offset().top + 5,  
-                        left: $button.offset().left + 5 
+                        top: $button.offset().top + 5,
+                        left: $button.offset().left + 5
                     })
                     .css({
                         'opacity': '0.8',
                         'position': 'absolute',
-                        'font-size': '20px', 
+                        'font-size': '20px',
                         'z-index': '10000'
                     });
 
-            
                 $('body').append($iconClone);
 
-               
                 $iconClone.animate({
                     'top': $cartTarget.offset().top + 10,
                     'left': $cartTarget.offset().left + 10,

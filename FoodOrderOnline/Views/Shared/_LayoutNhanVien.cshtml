@@ -156,7 +156,7 @@
         <!-- Navbar End -->
         @RenderBody()
 
-        @await Html.PartialAsync("_Footer")
+        @await Html.PartialAsync("_FooterNhanVien")
 
     </div>
 
@@ -166,18 +166,11 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
-
-
-
-    @* SỬA LỖI 5: Đổi link CDN (đang lỗi) sang link LOCAL *@
-    @* Dựa trên ảnh wwwroot của bạn, file jquery.js nằm ở đây: *@
     <script src="~/lib/jquery/dist/jquery.js"></script>
 
-    @* Chúng ta vẫn dùng CDN cho Bootstrap, nhưng thêm fallback (dự phòng) *@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script>
         if (typeof($.fn.modal) === 'undefined') {
-            // Nếu Bootstrap không tải được, dùng link local (giả sử bạn có)
             document.write('<script src="~/lib/bootstrap/bootstrap.bundle.min.js"><\/script>');
         }
     </script>
@@ -188,8 +181,6 @@
     <script src="~/mail/contact.js"></script>
 
     <script src="~/js/main.js" asp-append-version="true"></script>
-
-    @* Dòng này RẤT QUAN TRỌNG, nó dùng để chạy script "Add to Cart" *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
